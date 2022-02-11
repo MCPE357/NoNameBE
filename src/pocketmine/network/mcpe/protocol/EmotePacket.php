@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class EmotePacket extends DataPacket/* implements ClientboundPacket, ServerboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::EMOTE_PACKET;
@@ -74,7 +74,7 @@ class EmotePacket extends DataPacket/* implements ClientboundPacket, Serverbound
 		$this->putByte($this->flags);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleEmote($this);
 	}
 }

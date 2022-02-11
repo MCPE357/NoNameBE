@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class CompletedUsingItemPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::COMPLETED_USING_ITEM_PACKET;
@@ -62,7 +62,7 @@ class CompletedUsingItemPacket extends DataPacket{
 		$this->putLInt($this->action);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleCompletedUsingItem($this);
 	}
 }

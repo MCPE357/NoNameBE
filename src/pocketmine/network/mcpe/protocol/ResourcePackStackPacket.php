@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\Experiments;
 use pocketmine\resourcepacks\ResourcePack;
 use function count;
@@ -88,7 +88,7 @@ class ResourcePackStackPacket extends DataPacket{
 		$this->experiments->write($this);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleResourcePackStack($this);
 	}
 }

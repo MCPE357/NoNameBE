@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class AnvilDamagePacket extends DataPacket/* implements ServerboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::ANVIL_DAMAGE_PACKET;
@@ -72,7 +72,7 @@ class AnvilDamagePacket extends DataPacket/* implements ServerboundPacket*/{
 		$this->putBlockPosition($this->x, $this->y, $this->z);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleAnvilDamage($this);
 	}
 }

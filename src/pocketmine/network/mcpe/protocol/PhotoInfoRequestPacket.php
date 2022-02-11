@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class PhotoInfoRequestPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::PHOTO_INFO_REQUEST_PACKET;
@@ -46,7 +46,7 @@ class PhotoInfoRequestPacket extends DataPacket{
 		$this->putEntityUniqueId($this->photoId);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handlePhotoInfoRequest($this);
 	}
 }

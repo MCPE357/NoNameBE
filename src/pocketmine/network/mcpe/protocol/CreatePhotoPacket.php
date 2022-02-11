@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class CreatePhotoPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::CREATE_PHOTO_PACKET;
@@ -63,7 +63,7 @@ class CreatePhotoPacket extends DataPacket{
 		$this->putString($this->photoItemName);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleCreatePhoto($this);
 	}
 }

@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class PlayerArmorDamagePacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::PLAYER_ARMOR_DAMAGE_PACKET;
@@ -102,7 +102,7 @@ class PlayerArmorDamagePacket extends DataPacket/* implements ClientboundPacket*
 		$this->maybeWriteDamage($this->feetSlotDamage);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handlePlayerArmorDamage($this);
 	}
 }

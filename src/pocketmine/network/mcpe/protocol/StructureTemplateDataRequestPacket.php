@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\StructureSettings;
 
 class StructureTemplateDataRequestPacket extends DataPacket{
@@ -61,7 +61,7 @@ class StructureTemplateDataRequestPacket extends DataPacket{
 		$this->putByte($this->structureTemplateResponseType);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleStructureTemplateDataRequest($this);
 	}
 }

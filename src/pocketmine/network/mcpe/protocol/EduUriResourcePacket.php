@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\EducationUriResource;
 
 class EduUriResourcePacket extends DataPacket{
@@ -49,7 +49,7 @@ class EduUriResourcePacket extends DataPacket{
 		$this->resource->write($this);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleEduUriResource($this);
 	}
 }

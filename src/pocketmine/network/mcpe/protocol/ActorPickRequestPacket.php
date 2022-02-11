@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class ActorPickRequestPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::ACTOR_PICK_REQUEST_PACKET;
@@ -49,7 +49,7 @@ class ActorPickRequestPacket extends DataPacket{
 		$this->putBool($this->addUserData);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleActorPickRequest($this);
 	}
 }

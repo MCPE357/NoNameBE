@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class RemoveActorPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::REMOVE_ACTOR_PACKET;
@@ -41,7 +41,7 @@ class RemoveActorPacket extends DataPacket{
 		$this->putEntityUniqueId($this->entityUniqueId);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleRemoveActor($this);
 	}
 }

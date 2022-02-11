@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class ShowCreditsPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::SHOW_CREDITS_PACKET;
@@ -48,7 +48,7 @@ class ShowCreditsPacket extends DataPacket{
 		$this->putVarInt($this->status);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleShowCredits($this);
 	}
 }

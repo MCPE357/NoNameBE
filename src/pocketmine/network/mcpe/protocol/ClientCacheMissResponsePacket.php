@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\ChunkCacheBlob;
 use function count;
 
@@ -70,7 +70,7 @@ class ClientCacheMissResponsePacket extends DataPacket/* implements ClientboundP
 		}
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleClientCacheMissResponse($this);
 	}
 }

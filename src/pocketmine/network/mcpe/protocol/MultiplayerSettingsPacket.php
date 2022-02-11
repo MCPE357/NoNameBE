@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class MultiplayerSettingsPacket extends DataPacket/* implements ClientboundPacket, ServerboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::MULTIPLAYER_SETTINGS_PACKET;
@@ -55,7 +55,7 @@ class MultiplayerSettingsPacket extends DataPacket/* implements ClientboundPacke
 		$this->putVarInt($this->action);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleMultiplayerSettings($this);
 	}
 }

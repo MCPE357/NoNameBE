@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class CodeBuilderPacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::CODE_BUILDER_PACKET;
@@ -60,7 +60,7 @@ class CodeBuilderPacket extends DataPacket/* implements ClientboundPacket*/{
 		$this->putBool($this->openCodeBuilder);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleCodeBuilder($this);
 	}
 }

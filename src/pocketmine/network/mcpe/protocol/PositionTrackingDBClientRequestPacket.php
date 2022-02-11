@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class PositionTrackingDBClientRequestPacket extends DataPacket/* implements ServerboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::POSITION_TRACKING_D_B_CLIENT_REQUEST_PACKET;
@@ -58,7 +58,7 @@ class PositionTrackingDBClientRequestPacket extends DataPacket/* implements Serv
 		$this->putVarInt($this->trackingId);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handlePositionTrackingDBClientRequest($this);
 	}
 }

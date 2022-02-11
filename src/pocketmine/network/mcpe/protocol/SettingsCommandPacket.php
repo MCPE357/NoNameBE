@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class SettingsCommandPacket extends DataPacket/* implements ServerboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::SETTINGS_COMMAND_PACKET;
@@ -60,7 +60,7 @@ class SettingsCommandPacket extends DataPacket/* implements ServerboundPacket*/{
 		$this->putBool($this->suppressOutput);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleSettingsCommand($this);
 	}
 }

@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class NetworkSettingsPacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::NETWORK_SETTINGS_PACKET;
@@ -54,7 +54,7 @@ class NetworkSettingsPacket extends DataPacket/* implements ClientboundPacket*/{
 		$this->putLShort($this->compressionThreshold);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleNetworkSettings($this);
 	}
 }

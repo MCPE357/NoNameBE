@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\GameMode;
 
 class UpdatePlayerGameTypePacket extends DataPacket/* implements ClientboundPacket*/{
@@ -61,7 +61,7 @@ class UpdatePlayerGameTypePacket extends DataPacket/* implements ClientboundPack
 		$this->putEntityUniqueId($this->playerEntityUniqueId);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleUpdatePlayerGameType($this);
 	}
 }

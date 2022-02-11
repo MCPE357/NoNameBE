@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class NpcDialoguePacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::NPC_DIALOGUE_PACKET;
@@ -81,7 +81,7 @@ class NpcDialoguePacket extends DataPacket/* implements ClientboundPacket*/{
 		$this->putString($this->actionJson);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleNpcDialogue($this);
 	}
 }

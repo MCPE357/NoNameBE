@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class MapCreateLockedCopyPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::MAP_CREATE_LOCKED_COPY_PACKET;
@@ -45,7 +45,7 @@ class MapCreateLockedCopyPacket extends DataPacket{
 		$this->putEntityUniqueId($this->newMapId);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleMapCreateLockedCopy($this);
 	}
 }

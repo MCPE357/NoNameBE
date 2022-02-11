@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class FilterTextPacket extends DataPacket/* implements ClientboundPacket, ServerboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::FILTER_TEXT_PACKET;
@@ -56,7 +56,7 @@ class FilterTextPacket extends DataPacket/* implements ClientboundPacket, Server
 		$this->putBool($this->fromServer);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleFilterText($this);
 	}
 }

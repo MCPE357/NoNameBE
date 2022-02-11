@@ -29,6 +29,8 @@ use pocketmine\network\mcpe\protocol\BatchPacket;
 use pocketmine\network\mcpe\protocol\DataPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\Network;
+use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\player\Player as IPlayer;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\snooze\SleeperNotifier;
@@ -147,7 +149,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	}
 
 	public function openSession(string $identifier, string $address, int $port, int $clientID) : void{
-		$ev = new PlayerCreationEvent($this, Player::class, Player::class, $address, $port);
+		$ev = new PlayerCreationEvent($this, IPlayer::class, IPlayer::class, $address, $port);
 		$ev->call();
 		$class = $ev->getPlayerClass();
 
@@ -155,7 +157,10 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		 * @var Player $player
 		 * @see Player::__construct()
 		 */
-		$player = new $class($this, $ev->getAddress(), $ev->getPort());
+		$session = new NetworkSession($this->server, $this->server->getSessionManager(), $this, $address, $port);
+		$this->server->getSessionManager()->add($session);
+		$player = new $class($this->server, $session, $this, $address, $port);
+		$session->setPlayer($player);
 		$this->players[$identifier] = $player;
 		$this->identifiersACK[$identifier] = 0;
 		$this->identifiers[spl_object_hash($player)] = $identifier;

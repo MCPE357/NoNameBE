@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use function count;
 
 class ClientCacheBlobStatusPacket extends DataPacket/* implements ServerboundPacket*/{
@@ -87,7 +87,7 @@ class ClientCacheBlobStatusPacket extends DataPacket/* implements ServerboundPac
 		}
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleClientCacheBlobStatus($this);
 	}
 }

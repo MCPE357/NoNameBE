@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class NetworkChunkPublisherUpdatePacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::NETWORK_CHUNK_PUBLISHER_UPDATE_PACKET;
@@ -49,7 +49,7 @@ class NetworkChunkPublisherUpdatePacket extends DataPacket{
 		$this->putUnsignedVarInt($this->radius);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleNetworkChunkPublisherUpdate($this);
 	}
 }

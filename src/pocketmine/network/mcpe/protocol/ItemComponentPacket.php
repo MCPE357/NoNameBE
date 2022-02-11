@@ -26,7 +26,7 @@ namespace pocketmine\network\mcpe\protocol;
 #include <rules/DataPacket.h>
 
 use pocketmine\nbt\NetworkLittleEndianNBTStream;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\ItemComponentPacketEntry;
 use function count;
 
@@ -72,7 +72,7 @@ class ItemComponentPacket extends DataPacket/* implements ClientboundPacket*/{
 		}
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleItemComponent($this);
 	}
 }

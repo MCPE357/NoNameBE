@@ -26,7 +26,7 @@ namespace pocketmine\network\mcpe\protocol;
 #include <rules/DataPacket.h>
 
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class MotionPredictionHintsPacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::MOTION_PREDICTION_HINTS_PACKET;
@@ -64,7 +64,7 @@ class MotionPredictionHintsPacket extends DataPacket/* implements ClientboundPac
 		$this->putBool($this->onGround);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleMotionPredictionHints($this);
 	}
 }

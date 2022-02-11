@@ -91,7 +91,7 @@ use function substr;
 use function time;
 use function trim;
 
-class PlayerNetworkSessionAdapter extends NetworkSession{
+class PlayerNetworkSessionAdapter extends NetworkSessionAdapter{
 
 	/** @var Server */
 	private $server;

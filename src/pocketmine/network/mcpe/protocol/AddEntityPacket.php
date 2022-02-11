@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class AddEntityPacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::ADD_ENTITY_PACKET;
@@ -51,7 +51,7 @@ class AddEntityPacket extends DataPacket/* implements ClientboundPacket*/{
 		$this->putUnsignedVarInt($this->entityNetId);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleAddEntity($this);
 	}
 }

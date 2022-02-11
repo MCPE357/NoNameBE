@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class OnScreenTextureAnimationPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::ON_SCREEN_TEXTURE_ANIMATION_PACKET;
@@ -41,7 +41,7 @@ class OnScreenTextureAnimationPacket extends DataPacket{
 		$this->putLInt($this->effectId);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleOnScreenTextureAnimation($this);
 	}
 }

@@ -26,7 +26,7 @@ namespace pocketmine\network\mcpe\protocol;
 #include <rules/DataPacket.h>
 
 use pocketmine\network\mcpe\NetworkBinaryStream;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\Binary;
 use function assert;
@@ -115,7 +115,7 @@ class BatchPacket extends DataPacket{
 		$this->compressionLevel = $level;
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		if($this->payload === ""){
 			return false;
 		}
