@@ -150,7 +150,7 @@ class ItemFactory{
 		self::registerItem(new Item(Item::PAPER, 0, "Paper"));
 		self::registerItem(new Book());
 		self::registerItem(new Item(Item::SLIME_BALL, 0, "Slimeball"));
-		//TODO: CHEST_MINECART
+		self::registerItem(new ChestMinecart(Item::CHEST_MINECART, 0, "Chest Minecart"));
 
 		self::registerItem(new Egg());
 		self::registerItem(new Compass());
@@ -195,7 +195,7 @@ class ItemFactory{
 		self::registerItem(new Item(Item::GLISTERING_MELON, 0, "Glistering Melon"));
 		self::registerItem(new SpawnEgg());
 		self::registerItem(new ExperienceBottle());
-		//TODO: FIREBALL
+		self::registerItem(new FireCharge(Item::FIRE_CHARGE, 0, "Fire Charge"));
 		self::registerItem(new WritableBook());
 		self::registerItem(new WrittenBook());
 		self::registerItem(new Item(Item::EMERALD, 0, "Emerald"));
@@ -254,6 +254,7 @@ class ItemFactory{
 		self::registerItem(new Elytra());
 		self::registerItem(new Item(Item::SHULKER_SHELL, 0, "Shulker Shell"));
 		self::registerItem(new Banner());
+
 		//TODO: MEDICINE
 		//TODO: BALLOON
 		//TODO: RAPID_FERTILIZER
@@ -262,7 +263,8 @@ class ItemFactory{
 		self::registerItem(new Item(Item::IRON_NUGGET, 0, "Iron Nugget"));
 		//TODO: ICE_BOMB
 
-		//TODO: TRIDENT
+//		self::registerItem(new Trident(Item::TRIDENT, 0, "Trident"));
+		self::registerItem(new Spyglass(ItemIds::SPYGLASS, 0, "Spyglass"));
 
 		self::registerItem(new Beetroot());
 		self::registerItem(new BeetrootSeeds());
@@ -276,7 +278,7 @@ class ItemFactory{
 		self::registerItem(new GoldenAppleEnchanted());
 		self::registerItem(new Item(Item::HEART_OF_THE_SEA, 0, "Heart of the Sea"));
 		self::registerItem(new Item(Item::TURTLE_SHELL_PIECE, 0, "Scute"));
-		//TODO: TURTLE_HELMET
+		self::registerItem(new TurtleHelmet());
 
 		self::registerItem(new Record(Item::RECORD_13, LevelSoundEventPacket::SOUND_RECORD_13));
 		self::registerItem(new Record(Item::RECORD_CAT, LevelSoundEventPacket::SOUND_RECORD_CAT));

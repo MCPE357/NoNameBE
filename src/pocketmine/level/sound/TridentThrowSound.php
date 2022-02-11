@@ -21,19 +21,13 @@
 
 declare(strict_types=1);
 
-namespace pocketmine;
+namespace pocketmine\level\sound;
 
-use function defined;
+use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 
-// composer autoload doesn't use require_once and also pthreads can inherit things
-// TODO: drop this file and use a final class with constants
-if(defined('pocketmine\_VERSION_INFO_INCLUDED')){
-	return;
+class TridentThrowSound extends Sound{
+
+	public function encode() : array{
+		return [LevelSoundEventPacket::create(LevelSoundEventPacket::SOUND_ITEM_TRIDENT_THROW, $this)];
+	}
 }
-const _VERSION_INFO_INCLUDED = true;
-
-const NAME = "Esko";
-const BASE_VERSION = "3.0.0";
-const PROJECT_VERSION = "1.0.7";
-const IS_DEVELOPMENT_BUILD = true;
-const BUILD_CHANNEL = "master";
