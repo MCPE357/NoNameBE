@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class SetSpawnPositionPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::SET_SPAWN_POSITION_PACKET;
@@ -64,7 +64,7 @@ class SetSpawnPositionPacket extends DataPacket{
 		$this->putBlockPosition($this->x2, $this->y2, $this->z2);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleSetSpawnPosition($this);
 	}
 }

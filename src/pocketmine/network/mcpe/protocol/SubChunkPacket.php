@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\SubChunkPacketHeightMapInfo;
 use pocketmine\network\mcpe\protocol\types\SubChunkPacketHeightMapType;
 
@@ -113,7 +113,7 @@ class SubChunkPacket extends DataPacket{
 		}
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleSubChunk($this);
 	}
 }

@@ -26,7 +26,7 @@ namespace pocketmine\network\mcpe\protocol;
 #include <rules/DataPacket.h>
 
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class SetActorMotionPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::SET_ACTOR_MOTION_PACKET;
@@ -46,7 +46,7 @@ class SetActorMotionPacket extends DataPacket{
 		$this->putVector3($this->motion);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleSetActorMotion($this);
 	}
 }

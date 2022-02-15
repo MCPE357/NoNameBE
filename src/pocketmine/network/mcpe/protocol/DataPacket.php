@@ -27,7 +27,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\network\mcpe\CachedEncapsulatedPacket;
 use pocketmine\network\mcpe\NetworkBinaryStream;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\utils\Utils;
 use function bin2hex;
 use function get_class;
@@ -149,14 +149,14 @@ abstract class DataPacket extends NetworkBinaryStream{
 	}
 
 	/**
-	 * Performs handling for this packet. Usually you'll want an appropriately named method in the NetworkSession for this.
+	 * Performs handling for this packet. Usually you'll want an appropriately named method in the NetworkSessionAdapter for this.
 	 *
 	 * This method returns a bool to indicate whether the packet was handled or not. If the packet was unhandled, a debug message will be logged with a hexdump of the packet.
-	 * Typically this method returns the return value of the handler in the supplied NetworkSession. See other packets for examples how to implement this.
+	 * Typically this method returns the return value of the handler in the supplied NetworkSessionAdapter. See other packets for examples how to implement this.
 	 *
 	 * @return bool true if the packet was handled successfully, false if not.
 	 */
-	abstract public function handle(NetworkSession $session) : bool;
+	abstract public function handle(NetworkSessionAdapter $session) : bool;
 
 	/**
 	 * @return $this

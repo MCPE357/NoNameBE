@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class SubChunkRequestPacket extends DataPacket/* implements ServerboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::SUB_CHUNK_REQUEST_PACKET;
@@ -66,7 +66,7 @@ class SubChunkRequestPacket extends DataPacket/* implements ServerboundPacket*/{
 		$this->putVarInt($this->subChunkZ);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleSubChunkRequest($this);
 	}
 }

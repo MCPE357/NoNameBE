@@ -26,7 +26,7 @@ namespace pocketmine\network\mcpe\protocol;
 #include <rules/DataPacket.h>
 
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class CorrectPlayerMovePredictionPacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::CORRECT_PLAYER_MOVE_PREDICTION_PACKET;
@@ -71,7 +71,7 @@ class CorrectPlayerMovePredictionPacket extends DataPacket/* implements Clientbo
 		$this->putUnsignedVarLong($this->tick);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleCorrectPlayerMovePrediction($this);
 	}
 }

@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use function count;
 
 class TextPacket extends DataPacket{
@@ -122,7 +122,7 @@ class TextPacket extends DataPacket{
 		$this->putString($this->platformChatId);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleText($this);
 	}
 }

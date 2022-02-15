@@ -27,7 +27,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\nbt\NetworkLittleEndianNBTStream;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class LevelEventGenericPacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::LEVEL_EVENT_GENERIC_PACKET;
@@ -62,7 +62,7 @@ class LevelEventGenericPacket extends DataPacket/* implements ClientboundPacket*
 		$this->put($this->eventData);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleLevelEventGeneric($this);
 	}
 }

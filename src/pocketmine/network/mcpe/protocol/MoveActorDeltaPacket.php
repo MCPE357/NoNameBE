@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class MoveActorDeltaPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::MOVE_ACTOR_DELTA_PACKET;
@@ -105,7 +105,7 @@ class MoveActorDeltaPacket extends DataPacket{
 		$this->maybeWriteRotation(self::FLAG_HAS_ROT_Z, $this->zRot);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleMoveActorDelta($this);
 	}
 }

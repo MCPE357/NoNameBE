@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\SkinData;
 use pocketmine\utils\UUID;
 
@@ -57,7 +57,7 @@ class PlayerSkinPacket extends DataPacket{
 		$this->putBool($this->skin->isVerified());
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handlePlayerSkin($this);
 	}
 }

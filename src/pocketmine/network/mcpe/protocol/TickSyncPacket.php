@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class TickSyncPacket extends DataPacket/* implements ClientboundPacket, ServerboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::TICK_SYNC_PACKET;
@@ -67,7 +67,7 @@ class TickSyncPacket extends DataPacket/* implements ClientboundPacket, Serverbo
 		$this->putLLong($this->serverReceiveTime);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleTickSync($this);
 	}
 }

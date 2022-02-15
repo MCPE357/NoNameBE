@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class UpdateBlockSyncedPacket extends UpdateBlockPacket{
 	public const NETWORK_ID = ProtocolInfo::UPDATE_BLOCK_SYNCED_PACKET;
@@ -51,7 +51,7 @@ class UpdateBlockSyncedPacket extends UpdateBlockPacket{
 		$this->putUnsignedVarLong($this->updateType);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleUpdateBlockSynced($this);
 	}
 }

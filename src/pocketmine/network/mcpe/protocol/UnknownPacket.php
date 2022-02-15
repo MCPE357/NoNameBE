@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol;
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use function ord;
 use function strlen;
 
@@ -53,7 +53,7 @@ class UnknownPacket extends DataPacket{
 		$this->put($this->payload);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return false;
 	}
 }

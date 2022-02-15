@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class SimulationTypePacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::SIMULATION_TYPE_PACKET;
@@ -52,7 +52,7 @@ class SimulationTypePacket extends DataPacket/* implements ClientboundPacket*/{
 		$this->putByte($this->type);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleSimulationType($this);
 	}
 }

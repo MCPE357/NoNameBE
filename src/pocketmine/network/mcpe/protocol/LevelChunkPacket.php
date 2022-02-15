@@ -23,7 +23,10 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol;
 
-use pocketmine\network\mcpe\NetworkSession;
+#include <rules/DataPacket.h>
+
+use pocketmine\network\mcpe\NetworkSessionAdapter;
+
 use function count;
 use const PHP_INT_MAX;
 
@@ -146,7 +149,7 @@ class LevelChunkPacket extends DataPacket/* implements ClientboundPacket*/{
 		$this->putString($this->extraPayload);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleLevelChunk($this);
 	}
 }

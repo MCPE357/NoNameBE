@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class GameRulesChangedPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::GAME_RULES_CHANGED_PACKET;
@@ -44,7 +44,7 @@ class GameRulesChangedPacket extends DataPacket{
 		$this->putGameRules($this->gameRules);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleGameRulesChanged($this);
 	}
 }

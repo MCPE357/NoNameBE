@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class SetTitlePacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::SET_TITLE_PACKET;
@@ -73,7 +73,7 @@ class SetTitlePacket extends DataPacket{
 		$this->putString($this->platformOnlineId);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleSetTitle($this);
 	}
 }

@@ -147,8 +147,9 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		$this->interface->emergencyShutdown();
 	}
 
-	public function openSession(string $identifier, string $address, int $port, int $clientID) : void{
+	public function openSession(string $identifier, string $address, int $port, int $clientID) : void{<<<<<<< master
 		$ev = new PlayerCreationEvent($this, IPlayer::class, PM4Player::class, $address, $port);
+                                                                                                    
 		$ev->call();
 		$class = $ev->getPlayerClass();
 
@@ -156,7 +157,10 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		 * @var IPlayer $player
 		 * @see IPlayer::__construct()
 		 */
-		$player = new $class($this, $ev->getAddress(), $ev->getPort());
+		$session = new NetworkSession($this->server, $this->server->getSessionManager(), $this, $address, $port);
+		$this->server->getSessionManager()->add($session);
+		$player = new $class($this->server, $session, $this, $address, $port);
+		$session->setPlayer($player);
 		$this->players[$identifier] = $player;
 		$this->identifiersACK[$identifier] = 0;
 		$this->identifiers[spl_object_hash($player)] = $identifier;

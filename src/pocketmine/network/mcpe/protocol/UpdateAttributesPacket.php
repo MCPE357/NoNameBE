@@ -26,7 +26,7 @@ namespace pocketmine\network\mcpe\protocol;
 #include <rules/DataPacket.h>
 
 use pocketmine\entity\Attribute;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class UpdateAttributesPacket extends DataPacket{
 	public const NETWORK_ID = ProtocolInfo::UPDATE_ATTRIBUTES_PACKET;
@@ -50,7 +50,7 @@ class UpdateAttributesPacket extends DataPacket{
 		$this->putUnsignedVarLong($this->tick);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleUpdateAttributes($this);
 	}
 }

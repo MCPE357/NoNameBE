@@ -31,7 +31,7 @@ use pocketmine\inventory\ShapelessRecipe;
 use pocketmine\item\ItemFactory;
 use pocketmine\network\mcpe\convert\ItemTranslator;
 use pocketmine\network\mcpe\NetworkBinaryStream;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\MaterialReducerRecipe;
 use pocketmine\network\mcpe\protocol\types\MaterialReducerRecipeOutput;
 use pocketmine\network\mcpe\protocol\types\PotionContainerChangeRecipe;
@@ -329,7 +329,7 @@ class CraftingDataPacket extends DataPacket{
 		$this->putBool($this->cleanRecipes);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleCraftingData($this);
 	}
 }

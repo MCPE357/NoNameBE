@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\player;
 
+use pocketmine\Server;
 use pocketmine\level\Level;
 use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\Player as IPlayer;

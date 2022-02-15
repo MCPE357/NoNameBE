@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStackWrapper;
 
 class MobEquipmentPacket extends DataPacket{
@@ -58,7 +58,7 @@ class MobEquipmentPacket extends DataPacket{
 		$this->putByte($this->windowId);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleMobEquipment($this);
 	}
 }

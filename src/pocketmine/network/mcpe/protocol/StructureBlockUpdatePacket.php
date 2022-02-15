@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\StructureEditorData;
 
 class StructureBlockUpdatePacket extends DataPacket/* implements ServerboundPacket*/{
@@ -54,7 +54,7 @@ class StructureBlockUpdatePacket extends DataPacket/* implements ServerboundPack
 		$this->putBool($this->isPowered);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleStructureBlockUpdate($this);
 	}
 }

@@ -21,31 +21,38 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\network\mcpe\protocol;
+/**
+ * Network-related classes
+ */
+namespace pocketmine\network;
 
-#include <rules/DataPacket.h>
+use pocketmine\network\mcpe\NetworkSession;
 
-use pocketmine\network\mcpe\NetworkSessionAdapter;
-
-class TakeItemActorPacket extends DataPacket{
-	public const NETWORK_ID = ProtocolInfo::TAKE_ITEM_ACTOR_PACKET;
-
-	/** @var int */
-	public $target;
-	/** @var int */
-	public $eid;
-
-	protected function decodePayload(){
-		$this->target = $this->getEntityRuntimeId();
-		$this->eid = $this->getEntityRuntimeId();
+class NetworkSessionManager {
+	private $sessions = [];
+	
+	public function getSessions(): array{
+		return $this->sessions;
 	}
-
-	protected function encodePayload(){
-		$this->putEntityRuntimeId($this->target);
-		$this->putEntityRuntimeId($this->eid);
+	
+	public function add(NetworkSession $session){
+		$id = spl_object_id($session);
+		$this->sessions[$id] = $session;
 	}
-
-	public function handle(NetworkSessionAdapter $session) : bool{
-		return $session->handleTakeItemActor($this);
+	
+	public function remove(NetworkSession $session){
+		if (isset($this->sessions[$session])) unset($this->sessions[spl_object_id($session)]);
+	}
+	
+	public function getSessionsCount() : int{
+		return count($this->sessions);
+	}
+	
+	public function close(){
+		
+	}
+	
+	public function tick(){
+		
 	}
 }

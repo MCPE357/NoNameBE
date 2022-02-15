@@ -27,7 +27,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\math\Vector3;
 use pocketmine\nbt\NetworkLittleEndianNBTStream;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\BlockPaletteEntry;
 use pocketmine\network\mcpe\protocol\types\EducationEditionOffer;
 use pocketmine\network\mcpe\protocol\types\EducationUriResource;
@@ -352,7 +352,7 @@ class StartGamePacket extends DataPacket{
 		$this->putLLong($this->blockPaletteChecksum);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleStartGame($this);
 	}
 }

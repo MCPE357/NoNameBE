@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\EntityLink;
 
 class SetActorLinkPacket extends DataPacket{
@@ -42,7 +42,7 @@ class SetActorLinkPacket extends DataPacket{
 		$this->putEntityLink($this->link);
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleSetActorLink($this);
 	}
 }

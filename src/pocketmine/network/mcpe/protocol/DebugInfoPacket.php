@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class DebugInfoPacket extends DataPacket/* implements ClientboundPacket, ServerboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::DEBUG_INFO_PACKET;
@@ -59,7 +59,7 @@ class DebugInfoPacket extends DataPacket/* implements ClientboundPacket, Serverb
 		$this->putString($this->data);
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handleDebugInfo($this);
 	}
 }

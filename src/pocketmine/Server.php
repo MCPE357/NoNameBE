@@ -72,6 +72,7 @@ use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\AdvancedSourceInterface;
+use pocketmine\network\NetworkSessionManager;
 use pocketmine\network\CompressBatchedTask;
 use pocketmine\network\mcpe\encryption\EncryptionContext;
 use pocketmine\network\mcpe\protocol\BatchPacket;
@@ -291,6 +292,8 @@ class Server{
 
 	/** @var Network */
 	private $network;
+	/** @var NetworkSessionManager */
+	private $networkSessionManager;
 	/** @var bool */
 	private $networkCompressionAsync = true;
 	/** @var int */
@@ -1300,6 +1303,10 @@ class Server{
 		}
 		return self::$instance;
 	}
+	
+	public function getSessionManager() : NetworkSessionManager{
+		return $this->networkSessionManager;
+	}
 
 	/**
 	 * @return void
@@ -1321,6 +1328,7 @@ class Server{
 		$this->tickSleeper = new SleeperHandler();
 		$this->autoloader = $autoloader;
 		$this->logger = $logger;
+		$this->networkSessionManager = new NetworkSessionManager();
 
 		try{
 			if(!file_exists($dataPath . "worlds/")){

@@ -25,7 +25,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
 
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 use pocketmine\network\mcpe\protocol\types\ScoreboardIdentityPacketEntry;
 use function count;
 
@@ -64,7 +64,7 @@ class SetScoreboardIdentityPacket extends DataPacket{
 		}
 	}
 
-	public function handle(NetworkSession $session) : bool{
+	public function handle(NetworkSessionAdapter $session) : bool{
 		return $session->handleSetScoreboardIdentity($this);
 	}
 }

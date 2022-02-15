@@ -27,7 +27,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\nbt\NetworkLittleEndianNBTStream;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\NetworkSessionAdapter;
 
 class PositionTrackingDBServerBroadcastPacket extends DataPacket/* implements ClientboundPacket*/{
 	public const NETWORK_ID = ProtocolInfo::POSITION_TRACKING_D_B_SERVER_BROADCAST_PACKET;
@@ -75,7 +75,7 @@ class PositionTrackingDBServerBroadcastPacket extends DataPacket/* implements Cl
 		$this->put((new NetworkLittleEndianNBTStream())->write($this->nbt));
 	}
 
-	public function handle(NetworkSession $handler) : bool{
+	public function handle(NetworkSessionAdapter $handler) : bool{
 		return $handler->handlePositionTrackingDBServerBroadcast($this);
 	}
 }
