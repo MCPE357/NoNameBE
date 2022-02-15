@@ -25,23 +25,30 @@ namespace pocketmine\player;
 
 use pocketmine\Server;
 use pocketmine\level\Level;
+use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\Player as IPlayer;
-use pocketmine\network\SourceInterface;
-use pocketmine\network\mcpe\NetworkSession;
 
-class Player extends IPlayer{
-	
-	public function __construct(Server $server, NetworkSession $session, SourceInterface $interface, $ip, $port) {
-		//SourceInterface = RaklibInterface
-		parent::__construct($interface, $ip, $port);
+class Player extends IPlayer {
+
+	private PlayerInfo $playerInfo;
+
+	public function handleLogin(LoginPacket $packet) : bool{
+		parent::handleLogin($packet);
+		$this->playerInfo = $packet->playerInfo;
+		return true;
 	}
 
-	/*public function getPlayerInfo(): self
+	public function getNetworkSession() : self
 	{
-		return $this;
-	}soon implement */
+		return $this->getPlayer();
+	}
 
-	public function getWorld() : Level {
+	public function getPlayerInfo() : PlayerInfo{
+		return $this->playerInfo;
+	}
+
+	public function getWorld() : Level
+	{
 		return $this->getLevelNonNull();
 	}
 }
