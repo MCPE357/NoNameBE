@@ -74,6 +74,7 @@ use pocketmine\network\CompressBatchedTask;
 use pocketmine\network\mcpe\encryption\EncryptionContext;
 use pocketmine\network\mcpe\protocol\BatchPacket;
 use pocketmine\network\mcpe\protocol\DataPacket;
+use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\network\mcpe\protocol\PlayerListPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\types\PlayerListEntry;
@@ -1766,10 +1767,11 @@ class Server{
 
 		$targets = array_filter($players, function(Player $player) : bool{ return $player->isConnected(); });
 
-		if(count($targets) > 0){
+		if(count($targets) > 0) {
 			$pk = new BatchPacket();
 
-			foreach($packets as $p){
+			foreach($packets as $p) foreach ($targets as $_) {
+				$pk->protocolId = $_->getProtocolId();
 				$pk->addPacket($p);
 			}
 

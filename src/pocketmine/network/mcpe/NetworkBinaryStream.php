@@ -63,6 +63,8 @@ class NetworkBinaryStream extends BinaryStream{
 	private const DAMAGE_TAG_CONFLICT_RESOLUTION = "___Damage_ProtocolCollisionResolution___";
 	private const PM_META_TAG = "___Meta___";
 
+	public int $protocolId = -1;
+
 	public function getString() : string{
 		return $this->get($this->getUnsignedVarInt());
 	}
@@ -202,38 +204,40 @@ class NetworkBinaryStream extends BinaryStream{
 		$this->putString($image->getData());
 	}
 
-	public function getItemStackWithoutStackId() : Item{
+	public function getItemStackWithoutStackId(int $protocol) : Item{
 		return $this->getItemStack(function() : void{
 			//NOOP
-		});
+		}, $protocol);
 	}
 
-	public function putItemStackWithoutStackId(Item $item) : void{
+	public function putItemStackWithoutStackId(Item $item, int $protocolId) : void{
 		$this->putItemStack($item, function() : void{
 			//NOOP
-		});
+		}, $protocolId);
 	}
 
 	/**
 	 * @phpstan-param \Closure(NetworkBinaryStream) : void $readExtraCrapInTheMiddle
 	 */
-	public function getItemStack(\Closure $readExtraCrapInTheMiddle) : Item{
+	public function getItemStack(\Closure $readExtraCrapInTheMiddle, int $protocol) : Item{
 		$netId = $this->getVarInt();
 		if($netId === 0){
 			return ItemFactory::get(0, 0, 0);
 		}
 
+		$n = null;
+
 		$cnt = $this->getLShort();
 		$netData = $this->getUnsignedVarInt();
 
-		[$id, $meta] = ItemTranslator::getInstance()->fromNetworkId($netId, $netData);
+		[$id, $meta] = ItemTranslator::getInstance()->fromNetworkId($netId, $netData, $n, $protocol);
 
 		$readExtraCrapInTheMiddle($this);
 
 		$this->getVarInt();
 
 		$extraData = new NetworkBinaryStream($this->getString());
-		return (static function() use ($extraData, $netId, $id, $meta, $cnt) : Item{
+		return (static function() use ($protocol, $extraData, $netId, $id, $meta, $cnt) : Item{
 			$nbtLen = $extraData->getLShort();
 
 			/** @var CompoundTag|null $nbt */
@@ -262,7 +266,7 @@ class NetworkBinaryStream extends BinaryStream{
 				$extraData->get($extraData->getLShort());
 			}
 
-			if($netId === ItemTypeDictionary::getInstance()->fromStringId("minecraft:shield")){
+			if($netId === ItemTypeDictionary::getInstance()->fromStringId("minecraft:shield", $protocol)){
 				$extraData->getLLong(); //"blocking tick" (ffs mojang)
 			}
 
@@ -299,7 +303,7 @@ class NetworkBinaryStream extends BinaryStream{
 	/**
 	 * @phpstan-param \Closure(NetworkBinaryStream) : void $writeExtraCrapInTheMiddle
 	 */
-	public function putItemStack(Item $item, \Closure $writeExtraCrapInTheMiddle) : void{
+	public function putItemStack(Item $item, \Closure $writeExtraCrapInTheMiddle, int $protocolId) : void{
 		if($item->getId() === 0){
 			$this->putVarInt(0);
 
@@ -307,7 +311,7 @@ class NetworkBinaryStream extends BinaryStream{
 		}
 
 		$coreData = $item->getDamage();
-		[$netId, $netData] = ItemTranslator::getInstance()->toNetworkId($item->getId(), $coreData);
+		[$netId, $netData] = ItemTranslator::getInstance()->toNetworkId($item->getId(), $coreData, $protocolId);
 
 		$this->putVarInt($netId);
 		$this->putLShort($item->getCount());
@@ -320,7 +324,7 @@ class NetworkBinaryStream extends BinaryStream{
 		if($isBlockItem){
 			$block = $item->getBlock();
 			if($block->getId() !== BlockIds::AIR){
-				$blockRuntimeId = RuntimeBlockMapping::toStaticRuntimeId($block->getId(), $block->getDamage());
+				$blockRuntimeId = RuntimeBlockMapping::toStaticRuntimeId($protocolId, $block->getId(), $block->getDamage());
 			}
 		}
 		$this->putVarInt($blockRuntimeId);
@@ -351,7 +355,7 @@ class NetworkBinaryStream extends BinaryStream{
 		}
 
 		$this->putString(
-		(static function() use ($nbt, $netId) : string{
+		(static function() use ($nbt, $netId, $protocolId) : string{
 			$extraData = new NetworkBinaryStream();
 
 			if($nbt !== null){
@@ -365,33 +369,33 @@ class NetworkBinaryStream extends BinaryStream{
 			$extraData->putLInt(0); //CanPlaceOn entry count (TODO)
 			$extraData->putLInt(0); //CanDestroy entry count (TODO)
 
-			if($netId === ItemTypeDictionary::getInstance()->fromStringId("minecraft:shield")){
+			if($netId === ItemTypeDictionary::getInstance()->fromStringId("minecraft:shield", $protocolId)){
 				$extraData->putLLong(0); //"blocking tick" (ffs mojang)
 			}
 			return $extraData->getBuffer();
 		})());
 	}
 
-	public function getRecipeIngredient() : Item{
+	public function getRecipeIngredient(int $protocolId) : Item{
 		$netId = $this->getVarInt();
 		if($netId === 0){
 			return ItemFactory::get(ItemIds::AIR, 0, 0);
 		}
 		$netData = $this->getVarInt();
-		[$id, $meta] = ItemTranslator::getInstance()->fromNetworkIdWithWildcardHandling($netId, $netData);
+		[$id, $meta] = ItemTranslator::getInstance()->fromNetworkIdWithWildcardHandling($netId, $netData, $protocolId);
 		$count = $this->getVarInt();
 		return ItemFactory::get($id, $meta, $count);
 	}
 
-	public function putRecipeIngredient(Item $item) : void{
+	public function putRecipeIngredient(Item $item, int $protocolId) : void{
 		if($item->isNull()){
 			$this->putVarInt(0);
 		}else{
 			if($item->hasAnyDamageValue()){
-				[$netId, ] = ItemTranslator::getInstance()->toNetworkId($item->getId(), 0);
+				[$netId, ] = ItemTranslator::getInstance()->toNetworkId($item->getId(), 0, $protocolId);
 				$netData = 0x7fff;
 			}else{
-				[$netId, $netData] = ItemTranslator::getInstance()->toNetworkId($item->getId(), $item->getDamage());
+				[$netId, $netData] = ItemTranslator::getInstance()->toNetworkId($item->getId(), $item->getDamage(), $protocolId);
 			}
 			$this->putVarInt($netId);
 			$this->putVarInt($netData);

@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\convert;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\types\ItemTypeEntry;
 use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\SingletonTrait;
@@ -38,69 +39,80 @@ final class ItemTypeDictionary{
 	use SingletonTrait;
 
 	/**
-	 * @var ItemTypeEntry[]
+	 * @var ItemTypeEntry[][]
 	 * @phpstan-var list<ItemTypeEntry>
 	 */
 	private $itemTypes;
 	/**
-	 * @var string[]
+	 * @var string[][]
 	 * @phpstan-var array<int, string>
 	 */
 	private $intToStringIdMap = [];
 	/**
-	 * @var int[]
+	 * @var int[][]
 	 * @phpstan-var array<string, int>
 	 */
 	private $stringToIntMap = [];
 
 	private static function make() : self{
-		$data = file_get_contents(\pocketmine\RESOURCE_PATH . '/vanilla/required_item_list.json');
-		if($data === false) throw new AssumptionFailedError("Missing required resource file");
-		$table = json_decode($data, true);
-		if(!is_array($table)){
-			throw new AssumptionFailedError("Invalid item list format");
-		}
-
-		$params = [];
-		foreach($table as $name => $entry){
-			if(!is_array($entry) || !is_string($name) || !isset($entry["component_based"], $entry["runtime_id"]) || !is_bool($entry["component_based"]) || !is_int($entry["runtime_id"])){
+		$itemTypes = [];
+		foreach (ProtocolInfo::STR as $protocolId => $versionStr) {
+			$data = file_get_contents(\pocketmine\RESOURCE_PATH . '/vanilla/required_item_list' . $versionStr . '.json');
+			if($data === false) throw new AssumptionFailedError("Missing required resource file");
+			$table = json_decode($data, true);
+			if(!is_array($table)){
 				throw new AssumptionFailedError("Invalid item list format");
 			}
-			$params[] = new ItemTypeEntry($name, $entry["runtime_id"], $entry["component_based"]);
+
+			$params = [];
+			foreach($table as $name => $entry){
+				if(!is_array($entry) || !is_string($name) || !isset($entry["component_based"], $entry["runtime_id"]) || !is_bool($entry["component_based"]) || !is_int($entry["runtime_id"])){
+					throw new AssumptionFailedError("Invalid item list format");
+				}
+				$params[] = new ItemTypeEntry($name, $entry["runtime_id"], $entry["component_based"]);
+			}
+			$itemTypes[$protocolId] = $params;
 		}
-		return new self($params);
+		return new self($itemTypes);
 	}
 
 	/**
-	 * @param ItemTypeEntry[] $itemTypes
+	 * @param ItemTypeEntry[][] $itemTypes
 	 */
 	public function __construct(array $itemTypes){
 		$this->itemTypes = $itemTypes;
-		foreach($this->itemTypes as $type){
-			$this->stringToIntMap[$type->getStringId()] = $type->getNumericId();
-			$this->intToStringIdMap[$type->getNumericId()] = $type->getStringId();
+		foreach($this->itemTypes as $protocolId => $types){
+			foreach ($types as $type) {
+				$this->stringToIntMap[$protocolId][$type->getStringId()] = $type->getNumericId();
+				$this->intToStringIdMap[$protocolId][$type->getNumericId()] = $type->getStringId();
+			}
 		}
 	}
 
 	/**
+	 * @param int $protocolId
 	 * @return ItemTypeEntry[]
 	 * @phpstan-return list<ItemTypeEntry>
 	 */
-	public function getEntries() : array{
+	public function getEntries(int $protocolId) : array{
+		return $this->itemTypes[$protocolId];
+	}
+
+	public function getAllEntries(){
 		return $this->itemTypes;
 	}
 
-	public function fromStringId(string $stringId) : int{
-		if(!array_key_exists($stringId, $this->stringToIntMap)){
+	public function fromStringId(string $stringId, int $protocolId) : int{
+		if(!array_key_exists($stringId, $this->stringToIntMap[$protocolId])){
 			throw new \InvalidArgumentException("Unmapped string ID \"$stringId\"");
 		}
-		return $this->stringToIntMap[$stringId];
+		return $this->stringToIntMap[$protocolId][$stringId];
 	}
 
-	public function fromIntId(int $intId) : string{
-		if(!array_key_exists($intId, $this->intToStringIdMap)){
+	public function fromIntId(int $intId, int $protocolId) : string{
+		if(!array_key_exists($intId, $this->intToStringIdMap[$protocolId])){
 			throw new \InvalidArgumentException("Unmapped int ID $intId");
 		}
-		return $this->intToStringIdMap[$intId];
+		return $this->intToStringIdMap[$protocolId][$intId];
 	}
 }

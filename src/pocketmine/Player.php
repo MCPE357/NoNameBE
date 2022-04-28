@@ -269,7 +269,6 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 	private const RESERVED_WINDOW_ID_RANGE_END = ContainerIds::LAST;
 	public const HARDCODED_CRAFTING_GRID_WINDOW_ID = self::RESERVED_WINDOW_ID_RANGE_START + 1;
 	public const HARDCODED_INVENTORY_WINDOW_ID = self::RESERVED_WINDOW_ID_RANGE_START + 2;
-
 	/**
 	 * Validates the given username.
 	 */
@@ -294,9 +293,9 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 
 	/** @var string */
 	protected $ip;
+
 	/** @var int */
 	protected $port;
-
 	/** @var bool[] */
 	private $needACK = [];
 
@@ -319,16 +318,17 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 
 	/** @var bool */
 	private $seenLoginPacket = false;
+
 	/** @var bool */
 	private $awaitingEncryptionHandshake = false;
 	/** @var bool */
 	private $resourcePacksDone = false;
-
 	/** @var bool */
 	public $spawned = false;
 
 	/** @var string */
 	protected $username = "";
+
 	/** @var string */
 	protected $iusername = "";
 	/** @var string */
@@ -337,9 +337,9 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 	protected $randomClientId;
 	/** @var string */
 	protected $xuid = "";
-
 	/** @var int */
 	protected $windowCnt = 2;
+
 	/** @var int[] */
 	protected $windows = [];
 	/** @var Inventory[] */
@@ -461,6 +461,8 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 	protected $fishingHook = null;
 	/** @var int */
 	protected $commandPermission = AdventureSettingsPacket::PERMISSION_NORMAL;
+	/** @var int */
+	private $protocolId = -1;
 
 	/**
 	 * @return TranslationContainer|string
@@ -2015,7 +2017,9 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 		}
 		$this->seenLoginPacket = true;
 
-		if($packet->protocol !== ProtocolInfo::CURRENT_PROTOCOL){
+		$this->protocolId = $packet->protocol;
+
+		if(!in_array($packet->protocol, ProtocolInfo::SUPPORTED, true)){
 			if($packet->protocol < ProtocolInfo::CURRENT_PROTOCOL){
 				$this->sendPlayStatus(PlayStatusPacket::LOGIN_FAILED_CLIENT, true);
 			}else{
@@ -2024,7 +2028,6 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 
 			//This pocketmine disconnect message will only be seen by the console (PlayStatusPacket causes the messages to be shown for the client)
 			$this->close("", $this->server->getLanguage()->translateString("pocketmine.disconnect.incompatibleProtocol", [$packet->protocol]), false);
-
 			return true;
 		}
 
@@ -2152,6 +2155,13 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 			$this->onVerifyCompleted($packet, null, true);
 		}
 		return true;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getProtocolId() : int{
+		return $this->protocolId;
 	}
 
 	/**
@@ -2440,7 +2450,7 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 		$pk->levelId = "";
 		$pk->worldName = $this->server->getMotd();
 		$pk->experiments = new Experiments([], false);
-		$pk->itemTable = ItemTypeDictionary::getInstance()->getEntries();
+		$pk->itemTable = ItemTypeDictionary::getInstance()->getAllEntries();
 		$pk->playerMovementSettings = new PlayerMovementSettings(PlayerMovementType::LEGACY, 0, false);
 		$pk->serverSoftwareVersion = sprintf("%s %s", \pocketmine\NAME, \pocketmine\VERSION);
 		$pk->blockPaletteChecksum = 0; //we don't bother with this (0 skips verification) - the preimage is some dumb stringified NBT, not even actual NBT

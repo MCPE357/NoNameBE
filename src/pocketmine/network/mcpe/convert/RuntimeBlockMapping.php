@@ -27,6 +27,7 @@ use pocketmine\block\BlockIds;
 use pocketmine\nbt\NetworkLittleEndianNBTStream;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\NetworkBinaryStream;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\utils\AssumptionFailedError;
 use function file_get_contents;
 use function json_decode;
@@ -36,37 +37,42 @@ use function json_decode;
  */
 final class RuntimeBlockMapping{
 
-	/** @var int[] */
+	/** @var int[][] */
 	private static $legacyToRuntimeMap = [];
-	/** @var int[] */
+	/** @var int[][] */
 	private static $runtimeToLegacyMap = [];
-	/** @var CompoundTag[]|null */
-	private static $bedrockKnownStates = null;
+	/** @var CompoundTag[][]|null */
+	private static $bedrockKnownStates = [];
 
 	private function __construct(){
 		//NOOP
 	}
 
 	public static function init() : void{
-		$canonicalBlockStatesFile = file_get_contents(\pocketmine\RESOURCE_PATH . "vanilla/canonical_block_states.nbt");
-		if($canonicalBlockStatesFile === false){
-			throw new AssumptionFailedError("Missing required resource file");
-		}
-		$stream = new NetworkBinaryStream($canonicalBlockStatesFile);
-		$list = [];
-		while(!$stream->feof()){
-			$list[] = $stream->getNbtCompoundRoot();
-		}
-		self::$bedrockKnownStates = $list;
+		foreach (ProtocolInfo::STR as $protocolId => $versionStr) {
+			$canonicalBlockStatesFile = file_get_contents(\pocketmine\RESOURCE_PATH . "vanilla/canonical_block_states" . $versionStr . ".nbt");
+			if($canonicalBlockStatesFile === false){
+				throw new AssumptionFailedError("Missing required resource file");
+			}
+			$stream = new NetworkBinaryStream($canonicalBlockStatesFile);
+			$list = [];
+			while(!$stream->feof()){
+				$list[] = $stream->getNbtCompoundRoot();
+			}
+			self::$bedrockKnownStates[$protocolId] = $list;
 
-		self::setupLegacyMappings();
+			self::setupLegacyMappings($protocolId);
+		}
 	}
 
-	private static function setupLegacyMappings() : void{
+	private static function setupLegacyMappings(int $protocol) : void{
+		$strpro = ProtocolInfo::STR[$protocol];
 		$legacyIdMap = json_decode(file_get_contents(\pocketmine\RESOURCE_PATH . "vanilla/block_id_map.json"), true);
 		$metaMap = [];
 
-		foreach(RuntimeBlockMapping::$bedrockKnownStates as $runtimeId => $state){
+		/** @var R12ToCurrentBlockMapEntry[] $legacyStateMap */
+		$legacyStateMap = [];
+		foreach(RuntimeBlockMapping::$bedrockKnownStates[$protocol] as $runtimeId => $state){
 			$name = $state->getString("name");
 			if(!isset($legacyIdMap[$name])){
 				continue;
@@ -84,12 +90,9 @@ final class RuntimeBlockMapping{
 				continue;
 			}
 
-			self::registerMapping($runtimeId, $legacyId, $meta);
+			self::registerMapping($runtimeId, $legacyId, $meta, $protocol);
 		}
-
-		/** @var R12ToCurrentBlockMapEntry[] $legacyStateMap */
-		$legacyStateMap = [];
-		$legacyStateMapReader = new NetworkBinaryStream(file_get_contents(\pocketmine\RESOURCE_PATH . "vanilla/r12_to_current_block_map.bin"));
+		$legacyStateMapReader = new NetworkBinaryStream(file_get_contents(\pocketmine\RESOURCE_PATH . "vanilla/r12_to_current_block_map" . $strpro . ".bin"));
 		$nbtReader = new NetworkLittleEndianNBTStream();
 		while(!$legacyStateMapReader->feof()){
 			$id = $legacyStateMapReader->getString();
@@ -108,7 +111,7 @@ final class RuntimeBlockMapping{
 		 * @var int[][] $idToStatesMap string id -> int[] list of candidate state indices
 		 */
 		$idToStatesMap = [];
-		foreach(self::$bedrockKnownStates as $k => $state){
+		foreach(self::$bedrockKnownStates[$protocol] as $k => $state){
 			$idToStatesMap[$state->getString("name")][] = $k;
 		}
 		foreach($legacyStateMap as $pair){
@@ -130,9 +133,9 @@ final class RuntimeBlockMapping{
 				throw new \RuntimeException("Mapped new state does not appear in network table");
 			}
 			foreach($idToStatesMap[$mappedName] as $k){
-				$networkState = self::$bedrockKnownStates[$k];
+				$networkState = self::$bedrockKnownStates[$protocol][$k];
 				if($mappedState->equals($networkState)){
-					self::registerMapping($k, $id, $data);
+					self::registerMapping($k, $id, $data, $protocol);
 					continue 2;
 				}
 			}
@@ -146,35 +149,38 @@ final class RuntimeBlockMapping{
 		}
 	}
 
-	public static function toStaticRuntimeId(int $id, int $meta = 0) : int{
-		self::lazyInit();
+	public static function toStaticRuntimeId(int $protocol, int $id, int $meta = 0) : int{
+//		self::lazyInit();
 		/*
 		 * try id+meta first
 		 * if not found, try id+0 (strip meta)
 		 * if still not found, return update! block
 		 */
-		return self::$legacyToRuntimeMap[($id << 4) | $meta] ?? self::$legacyToRuntimeMap[$id << 4] ?? self::$legacyToRuntimeMap[BlockIds::INFO_UPDATE << 4];
+		if(count(self::$bedrockKnownStates) < 1){
+			self::init();
+		}
+		return self::$legacyToRuntimeMap[$protocol][($id << 4) | $meta] ?? self::$legacyToRuntimeMap[$protocol][$id << 4] ?? self::$legacyToRuntimeMap[$protocol][BlockIds::INFO_UPDATE << 4];
 	}
 
 	/**
 	 * @return int[] [id, meta]
 	 */
-	public static function fromStaticRuntimeId(int $runtimeId) : array{
+	public static function fromStaticRuntimeId(int $runtimeId, int $protocol) : array{
 		self::lazyInit();
-		$v = self::$runtimeToLegacyMap[$runtimeId];
+		$v = self::$runtimeToLegacyMap[$protocol][$runtimeId];
 		return [$v >> 4, $v & 0xf];
 	}
 
-	private static function registerMapping(int $staticRuntimeId, int $legacyId, int $legacyMeta) : void{
-		self::$legacyToRuntimeMap[($legacyId << 4) | $legacyMeta] = $staticRuntimeId;
-		self::$runtimeToLegacyMap[$staticRuntimeId] = ($legacyId << 4) | $legacyMeta;
+	private static function registerMapping(int $staticRuntimeId, int $legacyId, int $legacyMeta, int $protocol) : void{
+		self::$legacyToRuntimeMap[$protocol][($legacyId << 4) | $legacyMeta] = $staticRuntimeId;
+		self::$runtimeToLegacyMap[$protocol][$staticRuntimeId] = ($legacyId << 4) | $legacyMeta;
 	}
 
 	/**
 	 * @return CompoundTag[]
 	 */
-	public static function getBedrockKnownStates() : array{
+	public static function getBedrockKnownStates(int $protocol = ProtocolInfo::PROTOCOL_V30) : array{
 		self::lazyInit();
-		return self::$bedrockKnownStates;
+		return self::$bedrockKnownStates[$protocol];
 	}
 }

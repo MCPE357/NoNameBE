@@ -26,6 +26,7 @@ namespace pocketmine\block;
 use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\convert\RuntimeBlockMapping;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\utils\SingletonTrait;
 use function min;
 
@@ -440,8 +441,8 @@ class BlockFactory{
 	 * @internal
 	 * @deprecated
 	 */
-	public static function toStaticRuntimeId(int $id, int $meta = 0) : int{
-		return RuntimeBlockMapping::toStaticRuntimeId($id, $meta);
+	public static function toStaticRuntimeId(int $id, int $meta = 0) : int{ //not now
+		return RuntimeBlockMapping::toStaticRuntimeId(ProtocolInfo::PROTOCOL_V30, $id, $meta);
 	}
 
 	/**
@@ -450,7 +451,7 @@ class BlockFactory{
 	 *
 	 * @return int[] [id, meta]
 	 */
-	public static function fromStaticRuntimeId(int $runtimeId) : array{
-		return RuntimeBlockMapping::fromStaticRuntimeId($runtimeId);
+	public static function fromStaticRuntimeId(int $runtimeId, int $protocol) : array{
+		return RuntimeBlockMapping::fromStaticRuntimeId($runtimeId, $protocol);
 	}
 }
